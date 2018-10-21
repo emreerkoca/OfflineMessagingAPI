@@ -34,5 +34,7 @@ namespace OfflineMessagingAPI.Models
         public string Password { get; set; }
 
         public DateTime LastLoginTime { get; set; }
+
+        public bool IsOnline { get; set; }
     }
 }

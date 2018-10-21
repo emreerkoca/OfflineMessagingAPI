@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfflineMessagingAPI.DataContext;
 
 namespace OfflineMessagingAPI.Migrations
 {
     [DbContext(typeof(OfflineMessagingDbContext))]
-    partial class OfflineMessagingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181020234052_AddedIsOnlineToCustomUser")]
+    partial class AddedIsOnlineToCustomUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,25 +55,6 @@ namespace OfflineMessagingAPI.Migrations
                     b.HasIndex("BlockingUserID");
 
                     b.ToTable("BlockUser");
-                });
-
-            modelBuilder.Entity("OfflineMessagingAPI.Models.Chats", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("ReceiverDeleteTime");
-
-                    b.Property<int>("ReceiverId");
-
-                    b.Property<DateTime>("SenderDeleteTime");
-
-                    b.Property<int>("SenderId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("OfflineMessagingAPI.Models.CustomUser", b =>
@@ -119,8 +102,6 @@ namespace OfflineMessagingAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ChatId");
-
                     b.Property<bool>("IsActive");
 
                     b.Property<bool>("IsMessageReached");
@@ -139,8 +120,6 @@ namespace OfflineMessagingAPI.Migrations
                     b.Property<DateTime>("UploadDate");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("ChatId");
 
                     b.ToTable("Messages");
                 });
@@ -169,13 +148,6 @@ namespace OfflineMessagingAPI.Migrations
                     b.HasOne("OfflineMessagingAPI.Models.CustomUser", "BlockingUser")
                         .WithMany()
                         .HasForeignKey("BlockingUserID");
-                });
-
-            modelBuilder.Entity("OfflineMessagingAPI.Models.Messages", b =>
-                {
-                    b.HasOne("OfflineMessagingAPI.Models.Chats", "Chat")
-                        .WithMany()
-                        .HasForeignKey("ChatId");
                 });
 #pragma warning restore 612, 618
         }

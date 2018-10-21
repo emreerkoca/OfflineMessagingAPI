@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfflineMessagingAPI.DataContext;
 
 namespace OfflineMessagingAPI.Migrations
 {
     [DbContext(typeof(OfflineMessagingDbContext))]
-    partial class OfflineMessagingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181021131430_add-messages-chats-relationship")]
+    partial class addmessageschatsrelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,11 +63,11 @@ namespace OfflineMessagingAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("ReceiverDeleteTime");
+                    b.Property<bool>("IsReceiverDelete");
+
+                    b.Property<bool>("IsSenderDelete");
 
                     b.Property<int>("ReceiverId");
-
-                    b.Property<DateTime>("SenderDeleteTime");
 
                     b.Property<int>("SenderId");
 

@@ -30,5 +30,6 @@ namespace OfflineMessagingAPI.Models
         [Required]
         public bool IsMessageSeen { get; set; }
 
+        public virtual Chats Chat { get; set; }
     }
 }
