@@ -13,15 +13,18 @@ namespace OfflineMessagingAPI.Controllers
     [ApiController]
     public class MessagingController : ControllerBase
     {
+        #region Fields
         private readonly ICustomUserServices _customUserServices;
+        #endregion
 
-        #region Constructer
+        #region Constructor
         public MessagingController(ICustomUserServices customUserServices)
         {
             _customUserServices = customUserServices;
-        } 
+        }
         #endregion
 
+        #region CreateCustomUser
         //// POST api/messsaging/CreateCustomUser 
         [HttpPost]
         [Route("CreateCustomUser")]
@@ -29,29 +32,32 @@ namespace OfflineMessagingAPI.Controllers
         {
             var createdCustomUser = _customUserServices.CreateCustomUser(customUser);
 
-            if(createdCustomUser == null)
+            if (createdCustomUser == null)
             {
                 return NotFound();
             }
 
             return createdCustomUser;
         }
+        #endregion
 
+        #region LoginCustomUser
         [HttpPost]
         [Route("Login")]
         public ActionResult<CustomUser> LoginCustomUser(LoginInfo loginInfo)
         {
             var customUser = _customUserServices.LoginCustomUser(loginInfo);
 
-            if(customUser == null)
+            if (customUser == null)
             {
                 return NotFound();
             }
 
             return customUser;
         }
+        #endregion
 
-
+        #region SendMessage
         [HttpPost]
         [Route("SendMessage")]
         public bool SendMessage(MessageInfo messageInfo)
@@ -60,30 +66,25 @@ namespace OfflineMessagingAPI.Controllers
 
             return IsSendMessage;
         }
+        #endregion
 
-        // GET api/messaging/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        #region InsertActivityLog
+        public ActivityLogs InsertActivityLog(ActivityLogs activityLog)
         {
-            return "value";
+            return _customUserServices.InsertActivityLog(activityLog);
         }
+        #endregion
 
-        // POST api/messaging
-        [HttpPost]
-        public void Post([FromBody] string value)
+        #region GetAllChats
+        [HttpGet]
+        [Route("GetAllChats/{customUserId}")]
+        public List<List<Messages>> GetAllChats(int customUserId)
         {
-        }
+            UsersAllChats usersAllChats = new UsersAllChats();
+            usersAllChats.AllChats = _customUserServices.GetAllChats(customUserId);
 
-        // PUT api/messaging/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/messaging/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+            return usersAllChats.AllChats;
+        } 
+        #endregion
     }
 }

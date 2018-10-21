@@ -10,55 +10,159 @@ namespace OfflineMessagingAPI.Services
 {
     public class CustomUserServices : ICustomUserServices
     {
+        #region Fields
         private readonly OfflineMessagingDbContext _offlineMessagingDbContext;
+        #endregion
 
+        #region Constructor
         public CustomUserServices(OfflineMessagingDbContext offlineMessagingDbContext)
         {
             _offlineMessagingDbContext = offlineMessagingDbContext;
-        }
+        } 
+        #endregion
 
+        #region CreateCustomUser
         public CustomUser CreateCustomUser(CustomUser customUser)
         {
-            CustomUser addCustomUser = new CustomUser();
-            addCustomUser.FirstName = customUser.FirstName;
-            addCustomUser.LastName = customUser.LastName;
-            addCustomUser.UserName = customUser.UserName;
-            addCustomUser.Email = customUser.Email;
-            addCustomUser.Password = customUser.Password;
-            addCustomUser.IsActive = customUser.IsActive;
-            addCustomUser.LastLoginTime = customUser.LastLoginTime;
-            addCustomUser.UploadDate = customUser.UploadDate;
+            try
+            {
+                var userControl = _offlineMessagingDbContext.CustomUsers.Where(x => x.UserName == customUser.UserName || x.Email == customUser.Email).FirstOrDefault();
 
-            _offlineMessagingDbContext.CustomUsers.Add(addCustomUser);
+                if (userControl != null)
+                {
+                    return null;
+                }
+
+                CustomUser addCustomUser = new CustomUser();
+                addCustomUser.FirstName = customUser.FirstName;
+                addCustomUser.LastName = customUser.LastName;
+                addCustomUser.UserName = customUser.UserName;
+                addCustomUser.Email = customUser.Email;
+                addCustomUser.Password = customUser.Password;
+                addCustomUser.IsActive = customUser.IsActive;
+                addCustomUser.LastLoginTime = customUser.LastLoginTime;
+                addCustomUser.UploadDate = customUser.UploadDate;
+
+                _offlineMessagingDbContext.CustomUsers.Add(addCustomUser);
+                _offlineMessagingDbContext.SaveChanges();
+
+                return addCustomUser;
+            }
+            catch (Exception ex)
+            {
+                PublicLogs publicLog = new PublicLogs();
+                publicLog.LogContent = ex.ToString();
+                publicLog.LogTime = DateTime.Now;
+                InsertPublicLog(publicLog);
+                return null;
+            }
+        } 
+        #endregion
+
+        #region GetAllChats
+        public List<List<Messages>> GetAllChats(int customUserId)
+        {
+            try
+            {
+                List<Chats> chatsInfo = _offlineMessagingDbContext.Chats.Where(x => x.SenderId == customUserId || x.ReceiverId == customUserId).ToList();
+                UsersAllChats usersAllChats = new UsersAllChats();
+
+                if (chatsInfo != null)
+                {
+                    foreach (var chatInfo in chatsInfo)
+                    {
+                        List<Messages> messages = _offlineMessagingDbContext.Messages.Where(x => x.Chat.Id == chatInfo.Id && ((chatInfo.SenderId == customUserId && x.UploadDate >= chatInfo.SenderDeleteTime) || (chatInfo.ReceiverId == customUserId && x.UploadDate >= chatInfo.ReceiverDeleteTime))).ToList();
+                        usersAllChats.AllChats.Add(messages);
+                    }
+                }
+
+                return usersAllChats.AllChats;
+            }
+            catch (Exception ex)
+            {
+                PublicLogs publicLog = new PublicLogs();
+                publicLog.LogContent = ex.ToString();
+                publicLog.LogTime = DateTime.Now;
+                InsertPublicLog(publicLog);
+                return null;
+            }
+        } 
+        #endregion
+
+        #region InsertActivityLog
+        public ActivityLogs InsertActivityLog(ActivityLogs activityLog)
+        {
+            try
+            {
+                _offlineMessagingDbContext.ActivityLogs.Add(activityLog);
+                _offlineMessagingDbContext.SaveChanges();
+                return activityLog;
+            }
+            catch (Exception ex)
+            {
+                PublicLogs publicLog = new PublicLogs();
+                publicLog.LogContent = ex.ToString();
+                publicLog.LogTime = DateTime.Now;
+                InsertPublicLog(publicLog);
+                return null;
+            }
+        } 
+        #endregion
+
+        #region InsertPublicLog
+        public void InsertPublicLog(PublicLogs publicLog)
+        {
+            _offlineMessagingDbContext.PublicLogs.Add(publicLog);
             _offlineMessagingDbContext.SaveChanges();
+        } 
+        #endregion
 
-            return addCustomUser;
-        }
-
+        #region IsOnline
         public CustomUser IsOnline(string userName)
         {
-            var userDb = _offlineMessagingDbContext.CustomUsers.Where(x => x.UserName == userName && x.IsOnline).FirstOrDefault();
+            try
+            {
+                var userDb = _offlineMessagingDbContext.CustomUsers.Where(x => x.UserName == userName && x.IsOnline).FirstOrDefault();
 
-            return userDb;
-        }
+                return userDb;
+            }
+            catch (Exception ex)
+            {
+                PublicLogs publicLog = new PublicLogs();
+                publicLog.LogContent = ex.ToString();
+                publicLog.LogTime = DateTime.Now;
+                InsertPublicLog(publicLog);
+                return null;
+            }
+        } 
+        #endregion
 
-        public CustomUser IsOnline(CustomUser customUser)
-        {
-            throw new NotImplementedException();
-        }
-
+        #region LoginCustomUser
         public CustomUser LoginCustomUser(LoginInfo loginInfo)
         {
-            var customUser =  _offlineMessagingDbContext.CustomUsers.Where(x => (x.Email == loginInfo.UserNameOrEmail || x.UserName == loginInfo.UserNameOrEmail) && x.Password == loginInfo.Md5Password && x.IsActive == true).FirstOrDefault();
+            try
+            {
+                var customUser = _offlineMessagingDbContext.CustomUsers.Where(x => (x.Email == loginInfo.UserNameOrEmail || x.UserName == loginInfo.UserNameOrEmail) && x.Password == loginInfo.Md5Password && x.IsActive == true).FirstOrDefault();
 
 
-            customUser.IsOnline = true;
-            _offlineMessagingDbContext.CustomUsers.Update(customUser);
-            _offlineMessagingDbContext.SaveChanges();
+                customUser.IsOnline = true;
+                _offlineMessagingDbContext.CustomUsers.Update(customUser);
+                _offlineMessagingDbContext.SaveChanges();
 
-            return customUser;
-        }
+                return customUser;
+            }
+            catch (Exception ex)
+            {
+                PublicLogs publicLog = new PublicLogs();
+                publicLog.LogContent = ex.ToString();
+                publicLog.LogTime = DateTime.Now;
+                InsertPublicLog(publicLog);
+                return null;
+            }
+        } 
+        #endregion
 
+        #region SendMessage
         public bool SendMessage(MessageInfo messageInfo)
         {
             try
@@ -96,13 +200,17 @@ namespace OfflineMessagingAPI.Services
                 else
                 {
                     return false;
-
                 }
             }
             catch (Exception ex)
             {
+                PublicLogs publicLog = new PublicLogs();
+                publicLog.LogContent = ex.ToString();
+                publicLog.LogTime = DateTime.Now;
+                InsertPublicLog(publicLog);
                 return false;
             }
-        }
+        } 
+        #endregion
     }
 }

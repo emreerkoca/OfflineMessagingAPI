@@ -11,8 +11,10 @@ namespace OfflineMessagingAPI.Services
     {
         CustomUser CreateCustomUser(CustomUser customUser);
         CustomUser LoginCustomUser(LoginInfo loginInfo);
-        CustomUser IsOnline(CustomUser customUser);
+        CustomUser IsOnline(string customUserName);
         bool SendMessage(MessageInfo messageInfo);
-
+        List<List<Messages>> GetAllChats(int customUserId);
+        ActivityLogs InsertActivityLog(ActivityLogs activityLog);
+        void InsertPublicLog(PublicLogs publicLog);
     }
 }
