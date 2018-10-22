@@ -18,7 +18,7 @@ namespace OfflineMessagingAPI.Services
         public CustomUserServices(OfflineMessagingDbContext offlineMessagingDbContext)
         {
             _offlineMessagingDbContext = offlineMessagingDbContext;
-        } 
+        }
         #endregion
 
         #region CreateCustomUser
@@ -210,7 +210,15 @@ namespace OfflineMessagingAPI.Services
                 InsertPublicLog(publicLog);
                 return false;
             }
-        } 
+        }
+        #endregion
+
+        #region BlockUser
+        public void BlockUser(BlockUser blockUser)
+        {
+                _offlineMessagingDbContext.BlockUser.Add(blockUser);
+                _offlineMessagingDbContext.SaveChanges();
+        }
         #endregion
     }
 }

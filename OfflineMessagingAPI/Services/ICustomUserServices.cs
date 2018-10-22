@@ -16,5 +16,6 @@ namespace OfflineMessagingAPI.Services
         List<List<Messages>> GetAllChats(int customUserId);
         ActivityLogs InsertActivityLog(ActivityLogs activityLog);
         void InsertPublicLog(PublicLogs publicLog);
+        void BlockUser(BlockUser blockUser);
     }
 }

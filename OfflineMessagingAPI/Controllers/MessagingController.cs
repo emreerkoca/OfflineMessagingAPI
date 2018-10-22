@@ -84,7 +84,16 @@ namespace OfflineMessagingAPI.Controllers
             usersAllChats.AllChats = _customUserServices.GetAllChats(customUserId);
 
             return usersAllChats.AllChats;
-        } 
+        }
+        #endregion
+
+        #region BlockUser
+        [HttpGet]
+
+        public void BlockUser(BlockUser blockUser)
+        {
+            _customUserServices.BlockUser(blockUser);
+        }
         #endregion
     }
 }
