@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfflineMessagingAPI.DataContext;
 
 namespace OfflineMessagingAPI.Migrations
 {
     [DbContext(typeof(OfflineMessagingDbContext))]
-    partial class OfflineMessagingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181024190233_ChangeBlockUserTable")]
+    partial class ChangeBlockUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

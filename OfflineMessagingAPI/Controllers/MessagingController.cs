@@ -44,7 +44,7 @@ namespace OfflineMessagingAPI.Controllers
         #region LoginCustomUser
         [HttpPost]
         [Route("Login")]
-        public ActionResult<CustomUser> LoginCustomUser(LoginInfo loginInfo)
+        public ActionResult<CustomUser> LoginCustomUser(LoginInfoHelper loginInfo)
         {
             var customUser = _customUserServices.LoginCustomUser(loginInfo);
 
@@ -80,7 +80,7 @@ namespace OfflineMessagingAPI.Controllers
         [Route("GetAllChats/{customUserId}")]
         public List<List<Messages>> GetAllChats(int customUserId)
         {
-            UsersAllChats usersAllChats = new UsersAllChats();
+            UsersAllChatsHelper usersAllChats = new UsersAllChatsHelper();
             usersAllChats.AllChats = _customUserServices.GetAllChats(customUserId);
 
             return usersAllChats.AllChats;
@@ -88,11 +88,11 @@ namespace OfflineMessagingAPI.Controllers
         #endregion
 
         #region BlockUser
-        [HttpGet]
-
-        public void BlockUser(BlockUser blockUser)
+        [HttpPost]
+        [Route("BlockUser")]
+        public void BlockUser(BlockUserHelper blockUserHelper)
         {
-            _customUserServices.BlockUser(blockUser);
+            _customUserServices.BlockUser(blockUserHelper);
         }
         #endregion
     }

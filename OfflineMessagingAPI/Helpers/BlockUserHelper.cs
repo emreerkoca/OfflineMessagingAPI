@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace OfflineMessagingAPI.Helpers
 {
-    public class LoginInfo
+    public class BlockUserHelper
     {
-        public string UserNameOrEmail { get; set; }
-        public string Md5Password { get; set; }
+        public string blockerUserName { get; set; }
+        public string blockedUserName { get; set; }
     }
 }

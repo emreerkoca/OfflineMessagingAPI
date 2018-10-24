@@ -11,7 +11,7 @@ namespace OfflineMessagingAPI.Models
     {
         public int Id { get; set; }
 
-        public virtual CustomUser BlockingUser { get; set; }
+        public virtual CustomUser BlockerUser { get; set; }
 
         public virtual CustomUser BlockedUser { get; set; }
 

@@ -65,7 +65,7 @@ namespace OfflineMessagingAPI.Services
             try
             {
                 List<Chats> chatsInfo = _offlineMessagingDbContext.Chats.Where(x => x.SenderId == customUserId || x.ReceiverId == customUserId).ToList();
-                UsersAllChats usersAllChats = new UsersAllChats();
+                UsersAllChatsHelper usersAllChats = new UsersAllChatsHelper();
 
                 if (chatsInfo != null)
                 {
@@ -138,7 +138,7 @@ namespace OfflineMessagingAPI.Services
         #endregion
 
         #region LoginCustomUser
-        public CustomUser LoginCustomUser(LoginInfo loginInfo)
+        public CustomUser LoginCustomUser(LoginInfoHelper loginInfo)
         {
             try
             {
@@ -214,10 +214,28 @@ namespace OfflineMessagingAPI.Services
         #endregion
 
         #region BlockUser
-        public void BlockUser(BlockUser blockUser)
+        public void BlockUser(BlockUserHelper blockUser)
         {
-                _offlineMessagingDbContext.BlockUser.Add(blockUser);
+            var blockerUser = _offlineMessagingDbContext.CustomUsers.Where(x => x.UserName == blockUser.blockerUserName).FirstOrDefault();
+            var blockedUser = _offlineMessagingDbContext.CustomUsers.Where(x => x.UserName == blockUser.blockedUserName).FirstOrDefault();
+
+
+            if (blockerUser != null && blockedUser != null)
+            {
+                var dataExist = _offlineMessagingDbContext.BlockUser.Where(x => x.BlockerUser == blockerUser && x.BlockedUser == blockedUser).FirstOrDefault();
+                if(dataExist != null)
+                {
+                    return;
+                }
+
+                BlockUser blockUserObj = new BlockUser();
+                blockUserObj.BlockerUser = blockerUser;
+                blockUserObj.BlockedUser = blockedUser;
+                blockUserObj.BlockedDate = DateTime.Now;
+
+                _offlineMessagingDbContext.BlockUser.Add(blockUserObj);
                 _offlineMessagingDbContext.SaveChanges();
+            }
         }
         #endregion
     }

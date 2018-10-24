@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace OfflineMessagingAPI.Helpers
 {
-    public class UsersAllChats
+    public class UsersAllChatsHelper
     {
         public List<List<Messages>> AllChats { get; set; }
 
-        public UsersAllChats()
+        public UsersAllChatsHelper()
         {
             AllChats = new List<List<Messages>>();
         }
