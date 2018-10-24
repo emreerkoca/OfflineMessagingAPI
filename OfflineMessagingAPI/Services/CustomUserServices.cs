@@ -172,6 +172,14 @@ namespace OfflineMessagingAPI.Services
 
                 if (senderUser != null && receiverUser != null)
                 {
+                    #region Block Control
+                    var blockingStatus = _offlineMessagingDbContext.BlockUser.Where(x => x.BlockedUser == senderUser && x.BlockerUser == receiverUser).FirstOrDefault();
+                    if(blockingStatus != null)
+                    {
+                        return false;
+                    }
+                    #endregion
+
                     Chats chat = new Chats();
 
                     var dbChat = _offlineMessagingDbContext.Chats.Where(x => (x.SenderId == senderUser.ID || x.SenderId == receiverUser.ID) && (x.ReceiverId == receiverUser.ID || x.ReceiverId == senderUser.ID)).FirstOrDefault();
