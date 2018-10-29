@@ -13,6 +13,8 @@ namespace OfflineMessagingAPI.Models
 
         public string ActivityContent { get; set; }
 
-        public string ActivityTime { get; set; }
+        public DateTime ActivityTime { get; set; }
+
+        public virtual CustomUser customUser { get; set;}
     }
 }

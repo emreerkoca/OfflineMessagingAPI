@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfflineMessagingAPI.DataContext;
 
 namespace OfflineMessagingAPI.Migrations
 {
     [DbContext(typeof(OfflineMessagingDbContext))]
-    partial class OfflineMessagingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181029122815_CorrectionActivityTime")]
+    partial class CorrectionActivityTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,11 +31,7 @@ namespace OfflineMessagingAPI.Migrations
 
                     b.Property<DateTime>("ActivityTime");
 
-                    b.Property<int?>("customUserID");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("customUserID");
 
                     b.ToTable("ActivityLogs");
                 });
@@ -162,13 +160,6 @@ namespace OfflineMessagingAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PublicLogs");
-                });
-
-            modelBuilder.Entity("OfflineMessagingAPI.Models.ActivityLogs", b =>
-                {
-                    b.HasOne("OfflineMessagingAPI.Models.CustomUser", "customUser")
-                        .WithMany()
-                        .HasForeignKey("customUserID");
                 });
 
             modelBuilder.Entity("OfflineMessagingAPI.Models.BlockUser", b =>

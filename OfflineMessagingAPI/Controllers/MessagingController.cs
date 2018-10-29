@@ -37,6 +37,12 @@ namespace OfflineMessagingAPI.Controllers
                 return NotFound();
             }
 
+            ActivityLogs activityLog = new ActivityLogs();
+            activityLog.ActivityContent = "The user account has been created successfully";
+            activityLog.ActivityTime = DateTime.Now;
+            activityLog.customUser = createdCustomUser;
+            InsertActivityLog(activityLog);
+
             return createdCustomUser;
         }
         #endregion
@@ -54,6 +60,15 @@ namespace OfflineMessagingAPI.Controllers
             }
 
             return customUser;
+        }
+        #endregion
+
+        #region LogOutCustomUser
+        [HttpPost]
+        [Route("Logout")]
+        public void LogOutCustomUser(LoginInfoHelper logoutInfo)
+        {
+            _customUserServices.LoginCustomUser(logoutInfo);
         }
         #endregion
 

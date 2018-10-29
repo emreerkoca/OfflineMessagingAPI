@@ -142,14 +142,21 @@ namespace OfflineMessagingAPI.Services
         {
             try
             {
-                var customUser = _offlineMessagingDbContext.CustomUsers.Where(x => (x.Email == loginInfo.UserNameOrEmail || x.UserName == loginInfo.UserNameOrEmail) && x.Password == loginInfo.Md5Password && x.IsActive == true).FirstOrDefault();
+                var customUser = _offlineMessagingDbContext.CustomUsers.Where(x => (x.Email == loginInfo.UserNameOrEmail || x.UserName == loginInfo.UserNameOrEmail) && x.Password == loginInfo.Md5Password && x.IsActive).FirstOrDefault();
 
+                if(customUser != null)
+                {
+                    customUser.IsOnline = true;
+                    _offlineMessagingDbContext.CustomUsers.Update(customUser);
+                    _offlineMessagingDbContext.SaveChanges();
 
-                customUser.IsOnline = true;
-                _offlineMessagingDbContext.CustomUsers.Update(customUser);
-                _offlineMessagingDbContext.SaveChanges();
-
-                return customUser;
+                    return customUser;
+                }
+                else
+                {
+                    return null;
+                }
+              
             }
             catch (Exception ex)
             {
@@ -159,7 +166,31 @@ namespace OfflineMessagingAPI.Services
                 InsertPublicLog(publicLog);
                 return null;
             }
-        } 
+        }
+        #endregion
+
+        #region LogOutCustomUser
+        public void LogOutCustomUser(LoginInfoHelper logoutInfo)
+        {
+            try
+            {
+                var customUser = _offlineMessagingDbContext.CustomUsers.Where(x => (x.Email == logoutInfo.UserNameOrEmail || x.UserName == logoutInfo.UserNameOrEmail) && x.Password == logoutInfo.Md5Password && x.IsActive && x.IsOnline).FirstOrDefault();
+
+                if (customUser != null)
+                {
+                    customUser.IsOnline = false;
+                    _offlineMessagingDbContext.CustomUsers.Update(customUser);
+                    _offlineMessagingDbContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                PublicLogs publicLog = new PublicLogs();
+                publicLog.LogContent = ex.ToString();
+                publicLog.LogTime = DateTime.Now;
+                InsertPublicLog(publicLog);
+            }
+        }
         #endregion
 
         #region SendMessage
